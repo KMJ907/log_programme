@@ -1,198 +1,409 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>StudyGuard | 공용 PC 관리 솔루션</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCLogger - 공용 PC 사용 기록 관리 솔루션</title>
+    <style>
+        /* 기본 스타일 및 변수 설정 */
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent-color: #10b981;
+            --border-color: #334155;
+        }
 
-<style>
-body {
-  margin: 0;
-  font-family: Pretendard, Arial, sans-serif;
-  background: #0f172a;
-  color: white;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px 40px;
-  border-bottom: 1px solid #1e293b;
-}
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-nav a {
-  margin-left: 20px;
-  text-decoration: none;
-  color: #94a3b8;
-}
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-nav a:hover {
-  color: white;
-}
+        ul {
+            list-style: none;
+        }
 
-.hero {
-  padding: 120px 40px;
-  max-width: 900px;
-}
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-.hero h1 {
-  font-size: 56px;
-  line-height: 1.2;
-}
+        /* 헤더 */
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
 
-.hero p {
-  color: #cbd5e1;
-  font-size: 18px;
-  margin-top: 20px;
-}
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-button {
-  padding: 14px 28px;
-  margin-top: 30px;
-  border-radius: 10px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-}
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
 
-.primary {
-  background: white;
-  color: black;
-}
+        .logo span {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            font-weight: 400;
+            margin-left: 10px;
+        }
 
-.secondary {
-  background: transparent;
-  border: 1px solid #334155;
-  color: white;
-  margin-left: 10px;
-}
+        /* 메인 히어로 섹션 */
+        .hero {
+            padding: 120px 0 80px;
+            text-align: center;
+        }
 
-section {
-  padding: 80px 40px;
-}
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            line-height: 1.2;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-}
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-.card {
-  background: #111827;
-  padding: 30px;
-  border-radius: 20px;
-}
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
 
-footer {
-  text-align: center;
-  padding: 40px;
-  border-top: 1px solid #1e293b;
-  color: #64748b;
-}
-</style>
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* 섹션 공통 */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 60px;
+        }
+
+        .section-title span {
+            color: var(--primary-color);
+        }
+
+        /* 주요 기능 그리드 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            margin-bottom: 16px;
+            color: var(--primary-color);
+        }
+
+        /* 사용 대상 섹션 */
+        .target-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .target-item {
+            background: var(--border-color);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 500;
+        }
+
+        /* 장점 섹션 */
+        .benefit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .benefit-card {
+            padding: 20px;
+        }
+
+        .benefit-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        /* 도입 절차 */
+        .process-steps {
+            display: flex;
+            justify-content: space-around;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* 문의 섹션 */
+        .contact-box {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            padding: 60px;
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-btns {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            background: var(--border-color);
+        }
+
+        /* 푸터 */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .process-steps { flex-direction: column; gap: 40px; }
+            .contact-box { padding: 40px 20px; }
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-<div>
-<b>StudyGuard</b><br>
-<small>공용 PC 관리 솔루션</small>
-</div>
+    <header>
+        <div class="container header-content">
+            <div class="logo">PCLogger <span>공용 PC 사용 기록 관리 솔루션</span></div>
+            <a href="#contact" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">문의하기</a>
+        </div>
+    </header>
 
-<nav>
-<a href="#about">소개</a>
-<a href="#features">기능</a>
-<a href="#contact">문의</a>
-</nav>
-</header>
+    <section class="hero">
+        <div class="container">
+            <h1>공용 PC 관리,<br>더 쉽고 체계적으로</h1>
+            <p>로그인 기록, 프로그램 실행 기록, 화면 기록 저장부터<br>공지 전달 및 관리자 제어 기능까지 제공하는 올인원 공용 PC 관리 솔루션</p>
+            <a href="#contact" class="btn btn-primary">도입 문의하기</a>
+        </div>
+    </section>
 
+    <section id="features" style="background-color: rgba(255,255,255,0.02);">
+        <div class="container">
+            <h2 class="section-title">주요 <span>핵심 기능</span></h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>사용 기록 추적</h3>
+                    <p>로그인 및 로그아웃 시각을 초 단위로 정확하게 기록하여 사용 현황을 파악합니다.</p>
+                </div>
+                <div class="card">
+                    <h3>프로그램 실행 관리</h3>
+                    <p>어떤 프로그램을 얼마나 사용했는지 상세 리스트를 제공하여 부정 사용을 방지합니다.</p>
+                </div>
+                <div class="card">
+                    <h3>실시간 화면 기록</h3>
+                    <p>주기적인 화면 캡처 및 로그 저장을 통해 문제 발생 시 증빙 자료로 활용 가능합니다.</p>
+                </div>
+                <div class="card">
+                    <h3>공지사항 전달</h3>
+                    <p>개별 PC 또는 전체 PC에 즉각적인 팝업 공지사항을 전달하여 소통 효율을 높입니다.</p>
+                </div>
+                <div class="card">
+                    <h3>접속 상태 모니터링</h3>
+                    <p>현재 어떤 좌석이 사용 중인지, 대기 중인지 관리자 대시보드에서 실시간 확인합니다.</p>
+                </div>
+                <div class="card">
+                    <h3>원격 제어 및 로그아웃</h3>
+                    <p>비정상 사용자나 미퇴실 사용자를 관리자가 원격으로 즉시 로그아웃 시킬 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<section class="hero">
-<h1>
-공용 PC 관리,<br>
-더 쉽고 체계적으로
-</h1>
+    <section>
+        <div class="container">
+            <h2 class="section-title">누가 <span>사용하나요?</span></h2>
+            <div class="target-list">
+                <div class="target-item">🏫 학교 컴퓨터실</div>
+                <div class="target-item">📖 학원 교육장</div>
+                <div class="target-item">☕ 스터디카페</div>
+                <div class="target-item">🏠 가정용 PC 관리</div>
+                <div class="target-item">🏢 공용 오피스</div>
+            </div>
+        </div>
+    </section>
 
-<p>
-로그인 기록, 프로그램 실행 기록, 공지 전달, 사용자 상태 확인까지<br>
-학원 · 학교 · 공용 PC 환경을 위한 관리 솔루션
-</p>
+    <section style="background-color: rgba(255,255,255,0.02);">
+        <div class="container">
+            <h2 class="section-title">왜 <span>PCLogger</span> 인가요?</h2>
+            <div class="benefit-grid">
+                <div class="benefit-card">
+                    <h4>간편한 설치</h4>
+                    <p>복잡한 설정 없이 실행 파일 하나로 즉시 설치가 완료됩니다.</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>빠른 도입</h4>
+                    <p>회원가입 후 클라이언트 설치만 하면 바로 운영을 시작할 수 있습니다.</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>No Server</h4>
+                    <p>별도의 서버 구축 비용이 들지 않아 경제적입니다.</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>시간 절약</h4>
+                    <p>자동화된 기록 시스템으로 수동 관리 시간을 90% 이상 단축합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<button class="primary">도입 문의하기</button>
-<button class="secondary">기능 자세히 보기</button>
-</section>
+    <section>
+        <div class="container">
+            <h2 class="section-title">도입 <span>절차</span></h2>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <h4>도입 상담</h4>
+                    <p>사용 환경 및 규모 상담</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <h4>프로그램 설치</h4>
+                    <p>가이드에 따른 빠른 설치</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <h4>운영 시작</h4>
+                    <p>실시간 모니터링 및 관리</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <section id="contact">
+        <div class="container">
+            <div class="contact-box">
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">지금 바로 시작하세요</h2>
+                <p style="color: var(--text-dim);">PCLogger는 여러분의 관리 효율을 극대화할 준비가 되어 있습니다.</p>
+                <div class="contact-btns">
+                    <a href="#" class="btn btn-primary">상담 신청하기</a>
+                    <a href="#" class="btn btn-outline">카카오톡 문의</a>
+                    <a href="mailto:contact@pclogger.com" class="btn btn-outline">이메일 문의</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<section id="about">
-<h2>왜 필요한가</h2>
+    <footer>
+        <div class="container">
+            <p>© 2026 PCLogger. All rights reserved.</p>
+        </div>
+    </footer>
 
-<div class="cards">
-
-<div class="card">
-<h3>사용 기록 자동 저장</h3>
-<p>사용자의 로그인과 로그아웃 시간을 자동 기록합니다.</p>
-</div>
-
-<div class="card">
-<h3>프로그램 실행 추적</h3>
-<p>어떤 프로그램을 사용했는지 확인 가능합니다.</p>
-</div>
-
-<div class="card">
-<h3>공지 전달 기능</h3>
-<p>관리자가 사용자에게 공지를 즉시 전달할 수 있습니다.</p>
-</div>
-
-</div>
-</section>
-
-
-<section id="features">
-<h2>핵심 기능</h2>
-
-<div class="cards">
-
-<div class="card">
-<h3>사용자 상태 확인</h3>
-<p>현재 접속 중인지 실시간으로 확인할 수 있습니다.</p>
-</div>
-
-<div class="card">
-<h3>화면 기록 저장</h3>
-<p>필요한 상황에서 화면 기록 파일 관리가 가능합니다.</p>
-</div>
-
-<div class="card">
-<h3>관리자 명령 기능</h3>
-<p>강제 로그아웃 등 관리 명령 확장이 가능합니다.</p>
-</div>
-
-</div>
-</section>
-
-
-<section id="contact">
-<h2>문의 및 도입 상담</h2>
-
-<p>
-학원 · 학교 · 공용 공간 환경에 맞는 구성으로 안내해드립니다.
-</p>
-
-<button class="primary">
-카카오톡 문의 연결
-</button>
-
-<button class="secondary">
-이메일 문의
-</button>
-
-</section>
-
-
-<footer>
-© 2026 StudyGuard. All rights reserved.
-</footer>
-
+    <script>
+        // 간단한 부드러운 스크롤 효과
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>
